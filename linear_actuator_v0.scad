@@ -12,7 +12,7 @@ include<bearings.scad>
 
 $fn = 96;
 
-render_part(1);
+render_part(9);
 
 module render_part(part_to_render) {
 	if (part_to_render == 1) end_motor();
@@ -20,7 +20,7 @@ module render_part(part_to_render) {
 	if (part_to_render == 2) end_idler();
 
 	if (part_to_render == 3) carriage();
-
+        if (part_to_render == 9) carriage_top_body();
 	if (part_to_render == 4) carriage_syringe_pump();
 
 	if (part_to_render == 5) clamp_syringe_pump();
@@ -60,8 +60,9 @@ od_antibacklash_spring = 7;
 l_antibacklash_spring = 10;
 
 offset_guides = 3.5; // offset from centerline of motor shaft towards top (+y)
-d_guide_rod = 6.4; // 6mm guide rods
-guide_bearing = bearing_lm6uu;
+//d_guide_rod = 6.4; // 6mm guide rods
+d_guide_rod = 8.4; // 8mm guide rods
+guide_bearing = bearing_lm8uu;
 pad_guide_bearing_radius = 3;
 
 pad_guide_ends = 3; // backing material behind ends of guide rods
@@ -85,8 +86,10 @@ d_clamp_screw_nut = d_M3_nut;
 
 // syringe pump:
 d_plunger = 32; // diameter of the plunger end
-d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
-t_hook = 5; // thickness of the hook for securing syringe to actuator
+d_syringe = 17;
+//d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
+t_hook = 3;
+//t_hook = 5; // thickness of the hook for securing syringe to actuator
 d_plunger_max = 32; // this sets the spacing for screws on the plunger retainer and carriage
 d_plunger_retainer = d_plunger_max + 12;
 
@@ -152,6 +155,16 @@ module end_idler() {
 	}	
 }
 
+module carriage_top_body() {
+    hull() {
+		for (i = [-1, 1])
+			translate([i * cc_guides / 2, offset_guides, 0])
+				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = pad_guide_radius, center = true);
+
+		cylinder(r = od_antibacklash_spring / 2 + pad_guide_radius, h = pad_guide_radius, center = true);
+	}
+}
+
 module carriage_body() {
 	hull() {
 		for (i = [-1, 1])
@@ -171,8 +184,9 @@ module carriage_relief() {
 			// guide bearings
 			cylinder(r = guide_bearing[0] / 2, h = guide_bearing[2], center = true);
 
-			translate([i * (guide_bearing[0] / 2 - 2), -(guide_bearing[0] / 2 - 2), , 0])
-				cylinder(r = guide_bearing[0] / 2, h = guide_bearing[2], center = true);
+			//translate([i * (guide_bearing[0] / 2 - 2), -(guide_bearing[0] / 2 - 2), , 0])
+			//	cylinder(r = guide_bearing[0] / 2, h = guide_bearing[2], center = true);
+                    
 	}
 
 	// nut trap for fixed nut
@@ -195,13 +209,15 @@ module carriage_relief() {
 
 	// lead screw
 	cylinder(r = d_lead_screw /2 + 0.5, h = t_carriage + 2, center = true);
+        // remove top
+        translate([0,0,t_carriage/2]) cube([l_ends+pad_guide_bearing_radius*2+2,w_ends,4],center = true);
 }
 
 module carriage_support() {
 	// floors for holes
-	for (i =[-1, 1])
-		translate([i * cc_guides / 2, offset_guides, guide_bearing[2] / 2])
-			cylinder(r = guide_bearing[0] / 2 - 1, h = 0.2);
+//	for (i =[-1, 1])
+//		translate([i * cc_guides / 2, offset_guides, guide_bearing[2] / 2])
+//			cylinder(r = guide_bearing[0] / 2 - 1, h = 0.2);
 
 	translate([0, 0, -t_carriage / 2 + h_lead_nut + 4 + l_antibacklash_spring + h_lead_nut])
 		cylinder(r = d_lead_nut / 2, h = 0.2);
@@ -213,14 +229,14 @@ module carriage_support() {
 		cylinder(r = d_lead_nut / 2 + 1, h = 0.2);
 
 	// filler for gaps
-	for (i =[-1, 1])
-		translate([i * cc_guides / 2, offset_guides, 0])
-
-			difference() {
-				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = t_carriage, center = true);
-
-				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius - d_nozzle, h = t_carriage + 2, center = true); 
-			}
+//	for (i =[-1, 1])
+//		translate([i * cc_guides / 2, offset_guides, 0])
+//
+//			difference() {
+//				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = t_carriage, center = true);
+//
+//				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius - d_nozzle, h = t_carriage + 2, center = true); 
+//			}
 }
 
 module carriage() {
