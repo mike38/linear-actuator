@@ -12,7 +12,7 @@ include<bearings.scad>
 
 $fn = 96;
 
-render_part(9);
+render_part(4);
 
 module render_part(part_to_render) {
 	if (part_to_render == 1) end_motor();
@@ -20,7 +20,7 @@ module render_part(part_to_render) {
 	if (part_to_render == 2) end_idler();
 
 	if (part_to_render == 3) carriage();
-        if (part_to_render == 9) carriage_top_body();
+        if (part_to_render == 9) carriage_top();
 	if (part_to_render == 4) carriage_syringe_pump();
 
 	if (part_to_render == 5) clamp_syringe_pump();
@@ -157,23 +157,47 @@ module end_idler() {
 
 module carriage_top_body() {
     hull() {
-		for (i = [-1, 1])
+		for (i = [-1, 1]){
 			translate([i * cc_guides / 2, offset_guides, 0])
 				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = pad_guide_radius, center = true);
 
-		cylinder(r = od_antibacklash_spring / 2 + pad_guide_radius, h = pad_guide_radius, center = true);
+		translate([i * (cc_guides / 2+guide_bearing[0]) , offset_guides, 0]) cylinder(r = d_M3_screw, h = pad_guide_radius, center = true);
 	}
+}
 }
 
 module carriage_body() {
 	hull() {
-		for (i = [-1, 1])
+		for (i = [-1, 1]){
 			translate([i * cc_guides / 2, offset_guides, 0])
 				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = t_carriage, center = true);
-
+		}
 		cylinder(r = od_antibacklash_spring / 2 + pad_guide_radius, h = t_carriage, center = true);
-	}
 }
+	hull(){for (i = [-1, 1]){
+			translate([i * cc_guides / 2, offset_guides, 0])
+				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = guide_bearing[2]/2);
+		   translate([i * (cc_guides / 2+guide_bearing[0]) , offset_guides,guide_bearing[2]/2-pad_guide_radius]) cylinder(r = d_M3_screw, h = pad_guide_radius);
+	}}
+}
+
+module carriage_top_relief() {
+	for (i = [-1, 1]){
+		translate([i * cc_guides / 2, offset_guides, 0]) {
+			// guide rods
+			cylinder(r = d_guide_rod / 2 + 0.5, h = pad_guide_radius + 2, center = true);
+
+	} 
+		// M3 screw to close
+	  translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides, 0]) {
+		cylinder(r = d_M3_screw / 2, h = pad_guide_radius + 2, center = true);
+   }
+	}
+		// lead screw
+	cylinder(r = d_lead_screw /2 + 0.5, h = pad_guide_radius + 2, center = true);
+
+}
+
 
 module carriage_relief() {
 	for (i = [-1, 1])
@@ -210,14 +234,22 @@ module carriage_relief() {
 	// lead screw
 	cylinder(r = d_lead_screw /2 + 0.5, h = t_carriage + 2, center = true);
         // remove top
-        translate([0,0,t_carriage/2]) cube([l_ends+pad_guide_bearing_radius*2+2,w_ends,4],center = true);
+        translate([0,0,guide_bearing[2]/2+2]) cube([l_ends+pad_guide_bearing_radius*2+2,w_ends,4],center=true);
+
+		// M3 screw to close
+	for (i=[-1,1])
+translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,-0.5] ) {
+		cylinder(r = d_M3_screw / 2, h = guide_bearing[2]/2 + 1);
+   }
+	  
+   
 }
 
 module carriage_support() {
 	// floors for holes
-//	for (i =[-1, 1])
-//		translate([i * cc_guides / 2, offset_guides, guide_bearing[2] / 2])
-//			cylinder(r = guide_bearing[0] / 2 - 1, h = 0.2);
+	for (i =[-1, 1])
+		translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,guide_bearing[2]/5])
+			cylinder(r = d_M3_screw / 2 , h = 0.2);
 
 	translate([0, 0, -t_carriage / 2 + h_lead_nut + 4 + l_antibacklash_spring + h_lead_nut])
 		cylinder(r = d_lead_nut / 2, h = 0.2);
@@ -249,6 +281,14 @@ module carriage() {
 
 		carriage_support();
 	}
+}
+
+module carriage_top() {
+	difference() {
+			carriage_top_body();
+
+			carriage_top_relief();
+		}
 }
 
 module rounded_box(
