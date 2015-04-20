@@ -9,10 +9,14 @@
 include<fasteners.scad>
 include<steppers.scad>
 include<bearings.scad>
+//include<lm8uu-v3.scad>
+include<lm8uu.scad>
+
 
 $fn = 96;
 
-render_part(4);
+//lm8uu-v3();
+render_part(7);
 
 module render_part(part_to_render) {
 	if (part_to_render == 1) end_motor();
@@ -48,7 +52,7 @@ Secure plunger
 
 */
 
-d_nozzle = 0.75;
+d_nozzle = 0.25;
 
 motor = NEMA17;
 cc_guides = 50;
@@ -61,7 +65,7 @@ l_antibacklash_spring = 10;
 
 offset_guides = 3.5; // offset from centerline of motor shaft towards top (+y)
 //d_guide_rod = 6.4; // 6mm guide rods
-d_guide_rod = 8.4; // 8mm guide rods
+d_guide_rod = 8.5; // 8mm guide rods
 guide_bearing = bearing_lm8uu;
 pad_guide_bearing_radius = 3;
 
@@ -72,8 +76,10 @@ w_ends = motor[0];
 l_ends = cc_guides + d_guide_rod + 2 * pad_guide_radius;
 xy_aspect = l_ends / w_ends; // needed to scale rounded box
 t_motor_end = 25;
-idler = bearing_625;
+idler = bearing_F510;
+ //idler = bearing_625;
 t_idler_end = 20;
+pad_bearings = 8; // material above end bearings
 
 t_carriage = guide_bearing[2] + 6;
 
@@ -85,12 +91,13 @@ d_clamp_screw_nut = d_M3_nut;
 
 
 // syringe pump:
-d_plunger = 32; // diameter of the plunger end
-d_syringe = 17;
+d_plunger = 19.5; // diameter of the plunger end
+d_plunger_min = 12; // minimum diameter of plunger
+d_syringe = 18;
 //d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
 t_hook = 3;
 //t_hook = 5; // thickness of the hook for securing syringe to actuator
-d_plunger_max = 32; // this sets the spacing for screws on the plunger retainer and carriage
+d_plunger_max = 20; // this sets the spacing for screws on the plunger retainer and carriage
 d_plunger_retainer = d_plunger_max + 12;
 
 
@@ -174,11 +181,11 @@ module carriage_body() {
 		}
 		cylinder(r = od_antibacklash_spring / 2 + pad_guide_radius, h = t_carriage, center = true);
 }
-	hull(){for (i = [-1, 1]){
-			translate([i * cc_guides / 2, offset_guides, 0])
-				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = guide_bearing[2]/2);
-		   translate([i * (cc_guides / 2+guide_bearing[0]) , offset_guides,guide_bearing[2]/2-pad_guide_radius]) cylinder(r = d_M3_screw, h = pad_guide_radius);
-	}}
+	//hull(){for (i = [-1, 1]){
+//			translate([i * cc_guides / 2, offset_guides, 0])
+//				cylinder(r = guide_bearing[0] / 2 + pad_guide_bearing_radius, h = guide_bearing[2]/2);
+//		   translate([i * (cc_guides / 2+guide_bearing[0]) , offset_guides,guide_bearing[2]/2-pad_guide_radius]) cylinder(r = d_M3_screw, h = pad_guide_radius);
+//	}}
 }
 
 module carriage_top_relief() {
@@ -227,29 +234,29 @@ module carriage_relief() {
 				rotate([0, 0, 30])
 					cylinder(r = d_lead_nut / 2, h = l_antibacklash_spring + h_lead_nut / 2, $fn = 6);
 
-	translate([0, 0, -t_carriage / 2 + h_lead_nut + 4])
-		rotate([0, 0, 30])
-			cylinder(r = d_lead_nut / 2, h = l_antibacklash_spring + h_lead_nut, $fn = 6);
+//	translate([0, 0, -t_carriage / 2 + h_lead_nut + 4])
+//		rotate([0, 0, 30])
+//			cylinder(r = d_lead_nut / 2, h = l_antibacklash_spring + h_lead_nut, $fn = 6);
 
 	// lead screw
-	cylinder(r = d_lead_screw /2 + 0.5, h = t_carriage + 2, center = true);
+	cylinder(r = d_lead_screw /2 + .5, h = t_carriage + 2, center = true);
         // remove top
-        translate([0,0,guide_bearing[2]/2+2]) cube([l_ends+pad_guide_bearing_radius*2+2,w_ends,4],center=true);
+        //translate([0,0,guide_bearing[2]/2+2]) cube([l_ends+pad_guide_bearing_radius*2+2,w_ends,4],center=true);
 
 		// M3 screw to close
-	for (i=[-1,1])
-translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,-0.5] ) {
-		cylinder(r = d_M3_screw / 2, h = guide_bearing[2]/2 + 1);
-   }
+	//for (i=[-1,1])
+//translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,-0.5] ) {
+//		cylinder(r = d_M3_screw / 2, h = guide_bearing[2]/2 + 1);
+  // }
 	  
    
 }
 
 module carriage_support() {
 	// floors for holes
-	for (i =[-1, 1])
-		translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,guide_bearing[2]/5])
-			cylinder(r = d_M3_screw / 2 , h = 0.2);
+//	for (i =[-1, 1])
+//		translate([i * (cc_guides / 2 + guide_bearing[0]/2 + 1.5*d_M3_screw) , offset_guides,guide_bearing[2]/5])
+//			cylinder(r = d_M3_screw / 2 , h = 0.2);
 
 	translate([0, 0, -t_carriage / 2 + h_lead_nut + 4 + l_antibacklash_spring + h_lead_nut])
 		cylinder(r = d_lead_nut / 2, h = 0.2);
@@ -259,6 +266,11 @@ module carriage_support() {
 
 	translate([0, 0, -t_carriage / 2 + 2 + h_lead_nut])
 		cylinder(r = d_lead_nut / 2 + 1, h = 0.2);
+
+for (i = [-1, 1]) 
+		translate([i * cc_guides / 2, offset_guides, -guide_bearing[2]/2]) {
+			printable_lm8uu();}
+//cylinder(r = d_guide_rod / 2 + 0.5, h = pad_guide_radius + 2, center = true);
 
 	// filler for gaps
 //	for (i =[-1, 1])
@@ -278,7 +290,7 @@ module carriage() {
 
 			carriage_relief();
 		}
-
+	
 		carriage_support();
 	}
 }
@@ -370,9 +382,11 @@ module end_mount_holes(
 	diameter,
 	fn = $fn) {
 	// screw holes for retaining items against clamp
+    echo("mount",cc_guides=cc_guides, l_ends=l_ends);
 	for (i = [-1, 1])
 		for (j = [-1, 0])
-			translate([i * (cc_guides - idler[0] - d_lead_nut) / 2, offset_guides + j * w_ends / 2, 0])
+            //translate([i * (cc_guides - idler[0] - d_lead_nut ) / 2, offset_guides -2 + j * (w_ends / 2-2) , 0])
+			translate([i * (cc_guides - idler[0] - d_guide_rod - d_lead_nut ) / 2, offset_guides -2 + j * (w_ends / 2-2) , 0])
 				cylinder(r = diameter / 2, h = thickness, $fn = fn, center = true);
 }
 
@@ -392,7 +406,7 @@ module carriage_syringe_pump() {
 				carriage_body();
 
 				// pusher for the plunger
-				translate([0, (idler[0] + d_syringe) / 2, (t_holder - t_carriage) / 2])
+                translate([0, (idler[0] + d_syringe) / 2, (t_holder - t_carriage) / 2])
 					rounded_box(
 						l1 = cc_guides - d_guide_rod,
 						l2 = d_syringe,
@@ -409,7 +423,7 @@ module carriage_syringe_pump() {
 
 			// screw hole for plunger lock
 			for (i = [-1, 1])
-					translate([i * ((d_plunger_retainer - (d_plunger_retainer - d_plunger_max) + d_M3_screw) / 2), (idler[0] + d_syringe) / 2, (t_holder - t_carriage) / 2]) {
+					translate([i * ((d_plunger_retainer - (d_plunger_retainer - d_plunger_max) + d_M3_screw) / 2), (idler[0] + pad_bearings+  d_syringe) / 2, (t_holder - t_carriage) / 2]) {
 						cylinder(r = d_M3_screw / 2, h = t_holder + 1, center = true);
 
 						translate([0, 0, t_holder - 2 * h_M3_nut])
@@ -425,7 +439,7 @@ module carriage_syringe_pump() {
 
 // renders a clamping fixture for holding the syringe body in place
 module clamp_syringe_pump() {
-	t_syringe_clamp = 8;
+	t_syringe_clamp = 7;
 
 	difference() {
 				union() {
@@ -435,26 +449,26 @@ module clamp_syringe_pump() {
 					translate([0, -((w_ends + idler[0]) / 2 - idler[0]) / 2, 0])
 						cube([l_ends - 2 * (l_ends - cc_guides), (w_ends + idler[0]) / 2, t_syringe_clamp], center = true);
 
-					translate([0, (idler[0] + d_syringe) / 2, 0])
+					translate([0, (idler[0]+ pad_bearings + d_syringe) / 2, 0])
 						hull()
-							for (i = [0, -1])
+							for (i = [-0.7, -1])
 								translate([0, i * d_syringe / 2, 0])
 									cylinder(r = d_syringe / 2 + 4, h = t_syringe_clamp, center = true);
 
-				translate([0, -((w_ends + idler[0]) / 2 - idler[0]) / 2 - (w_ends + idler[0]) / 4 + (d_M3_nut + 2) / 2, 1])
-					cube([l_ends - 2 * (l_ends - cc_guides), d_M3_nut + 2, t_syringe_clamp + 2], center = true);
+				translate([0, -((w_ends + idler[0]) / 2 - idler[0]) / 2 - (w_ends + idler[0]) / 4 + (d_M3_nut + 2) / 2 , 2])
+					cube([l_ends - 2 * (l_ends - cc_guides), d_M3_nut + 2, t_syringe_clamp + 3], center = true);
 		}
 
 		// lead screw
 		hull()
 			for (i = [0, -1])
 				translate([0, i * w_ends, 0])
-					cylinder(r = d_lead_nut / 2 + 1, h = t_syringe_clamp + 6, center = true);
+					cylinder(r = d_lead_nut / 2 + 1, h = t_syringe_clamp + 8, center = true);
 
 		// screw holes for retaining syringe against clamp
-		end_mount_holes(t_syringe_clamp + 1, d_M3_screw);
+		end_mount_holes(t_syringe_clamp + 3, d_M3_screw);
 
-		translate([0, 0, t_syringe_clamp / 2])
+		translate([0, 0, t_syringe_clamp / 2+1])
 			end_mount_holes(h_M3_nut * 2, d_M3_nut, 6);
 
 		// guide rods
@@ -463,7 +477,7 @@ module clamp_syringe_pump() {
 					cylinder(r = d_guide_rod / 2, h = t_syringe_clamp + 1, center = true);
 
 		// syringe
-		translate([0, (idler[0] + d_syringe) / 2, 0])
+		translate([0, (idler[0]+ pad_bearings + d_syringe) / 2, 0])
 			cylinder(r = d_syringe / 2, h = t_syringe_clamp + 1, center = true);
 
 		for (i = [-1, 1])
@@ -472,7 +486,7 @@ module clamp_syringe_pump() {
 					l1 = (l_ends - cc_guides + 3),
 					l2 = w_ends,
 					r_corner = 3,
-					height = t_syringe_clamp + 1);
+					height = t_syringe_clamp +1);
 	}
 }
 
@@ -510,7 +524,7 @@ module syringe_plunger_retainer() {
 		hull()
 			for (i = [0, 1])
 				translate([0, i * (d_plunger / 2 + 5), 0])
-					cylinder(r1 = d_plunger / 4, r2 = d_plunger / 2 + 0.1, h = t_retainer, center = true);
+					cylinder(r1 = d_plunger_min / 2 + 1, r2 = d_plunger / 2 + 0.1, h = t_retainer, center = true);
 
 		translate([-(d_plunger_retainer + 2) / 2, d_syringe / 2, -t_retainer / 2 - 1])
 			cube([d_plunger_retainer + 2, d_plunger_retainer + 2, t_retainer + 2]);
@@ -526,32 +540,32 @@ module syringe_plunger_retainer() {
 				}
 
 		// lead screw
-		translate([0, -(idler[0] + d_syringe) / 2, 0])
+		translate([0, -(idler[0] + pad_bearings + d_syringe) / 2, 0])
 		cylinder(r = d_lead_nut / 2 + 1, h = t_retainer + 1, center = true);
 	}
 
 	// wedge
-	translate([d_plunger_retainer, 0, -1.5])
-		difference() {
-			hull()
-				for (i = [0, 1])
-					translate([0, i * (d_plunger / 2 + 5), 0])
-						cylinder(r2 = d_plunger / 4, r1 = d_plunger / 2 + 0.1, h = t_retainer, center = true);
-
-//			translate([-(d_plunger_retainer + 2) / 2, d_syringe / 2, -t_retainer / 2 - 1])
-//				cube([d_plunger_retainer + 2, d_plunger_retainer + 2, t_retainer + 2]);
-
-			hull()
-				for (i = [0, -1])
-					translate([0, i * d_plunger, 0])
-						cylinder(r = d_plunger / 4, h = t_retainer, center = true);
-
-			translate([0, 0, -t_retainer / 2])
-				cube([d_plunger_retainer * 2, d_plunger_retainer * 2, 3], center = true);
-
-			translate([0, d_plunger / 2 + 5, 12])
-				sphere(10);
-		}
+//	translate([d_plunger_retainer, 0, -1.5])
+//		difference() {
+//			hull()
+//				for (i = [0, 1])
+//					translate([0, i * (d_plunger / 2 + 5), 0])
+//						cylinder(r2 = d_plunger_min / 2 +1, r1 = d_plunger / 2 + 0.1, h = t_retainer, center = true);
+//
+////			translate([-(d_plunger_retainer + 2) / 2, d_syringe / 2, -t_retainer / 2 - 1])
+////				cube([d_plunger_retainer + 2, d_plunger_retainer + 2, t_retainer + 2]);
+//
+//			hull()
+//				for (i = [0, -1])
+//					translate([0, i * d_plunger, 0])
+//						cylinder(r = d_plunger_min / 2+.1, h = t_retainer, center = true);
+//
+//			translate([0, 0, -t_retainer / 2])
+//				cube([d_plunger_retainer * 2, d_plunger_retainer * 2, 3], center = true);
+//
+//			translate([0, d_plunger / 2 + 5, 12])
+//				sphere(10);
+//		}
 }
 
 module syringe_bungie() {

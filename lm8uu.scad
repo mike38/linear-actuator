@@ -1,7 +1,7 @@
 $fn=100;
 
 radio_ext=15/2;
-radio_int=8/2;	//Para varilla M8
+radio_int=8.2/2;	//Para varilla M8
 altura=24;
 grosor=1.2;
 num_dientes=9;
@@ -39,7 +39,7 @@ module printable_lm8uu(){
 }
 
 //color("blue") varilla_lisa_M8();
-//lm8uu();
+//printable_lm8uu();
 
 
 

@@ -18,11 +18,22 @@ id_625 = 5.4;
 h_625 = 5;
 bearing_625 = [od_625, id_625, h_625];
 
+// HK0509 bearing needles
+od_509 = 9.4;
+id_509 = 5.4;
+h_509 = 9;
+bearing_509 = [od_509, id_509, h_509];
+
+// F5104 butée 
+od_F510 = 10.5;
+id_F510 = 5.4;
+h_F510 = 2;
+bearing_F510 = [od_F510, id_F510, h_F510];
 
 // lm8uu bearing dims
 od_lm8uu = 15.2; // measured 15
 id_lm8uu = 8; // should be 8 or so
-l_lm8uu = 24.5; // measured 24
+l_lm8uu = 24; // measured 24
 bearing_lm8uu = [od_lm8uu, id_lm8uu, l_lm8uu];
 
 // lm6uu bearing dims
