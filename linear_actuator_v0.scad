@@ -16,7 +16,7 @@ include<lm8uu.scad>
 $fn = 96;
 
 //lm8uu-v3();
-render_part(7);
+render_part(5);
 
 module render_part(part_to_render) {
 	if (part_to_render == 1) end_motor();
@@ -76,7 +76,7 @@ w_ends = motor[0];
 l_ends = cc_guides + d_guide_rod + 2 * pad_guide_radius;
 xy_aspect = l_ends / w_ends; // needed to scale rounded box
 t_motor_end = 25;
-idler = bearing_F510;
+idler = bearing_F511;
  //idler = bearing_625;
 t_idler_end = 20;
 pad_bearings = 8; // material above end bearings

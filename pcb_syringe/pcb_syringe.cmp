@@ -1,0 +1,136 @@
+Cmp-Mod V01 Created by CvPcb (25-Oct-2014 BZR 4029)-stable date = lun. 11 mai 2015 23:33:25 CEST
+
+BeginCmp
+TimeStamp = /555111C4;
+Reference = P1;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /55510E0E;
+Reference = P2;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550B9D4;
+Reference = P3;
+ValeurCmp = CONN_6;
+IdModule  = PIN_ARRAY-6X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550B9E3;
+Reference = P4;
+ValeurCmp = CONN_8;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BACD;
+Reference = SW1;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAC7;
+Reference = SW2;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BABA;
+Reference = SW3;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAD3;
+Reference = SW4;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BA99;
+Reference = SW5;
+ValeurCmp = SWITCH_INV;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAD9;
+Reference = SW6;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BADF;
+Reference = SW7;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAE5;
+Reference = SW8;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAEB;
+Reference = SW9;
+ValeurCmp = SPST;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAAC;
+Reference = SW10;
+ValeurCmp = SWITCH_INV;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAA6;
+Reference = SW11;
+ValeurCmp = SWITCH_INV;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550BAB2;
+Reference = SW12;
+ValeurCmp = SWITCH_INV;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550B769;
+Reference = SW13;
+ValeurCmp = CODING_SWITCH;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550B30E;
+Reference = U1;
+ValeurCmp = POLOLU_A4988;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5550B2FA;
+Reference = U2;
+ValeurCmp = POLOLU_A4988;
+IdModule  = ;
+EndCmp
+
+EndListe

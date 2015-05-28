@@ -1,0 +1,40 @@
+# EESchema Netlist Version 1.1 created  13/06/2011 10:33:30
+(
+ ( /4DF5C370 PIN_ARRAY-6X1 J1 POWER
+  ( 1 ? )
+  ( 2 ? )
+  ( 3 ? )
+  ( 4 /GND )
+  ( 5 /GND )
+  ( 6 ? )
+ )
+ ( /4DF5C372 PIN_ARRAY-6X1 J2 AD
+  ( 1 ? )
+  ( 2 ? )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+ )
+ ( /4DF5C37D PIN_ARRAY_8X1 J3 IOL
+  ( 1 ? )
+  ( 2 ? )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+  ( 7 ? )
+  ( 8 ? )
+ )
+ ( /4DF5C37B PIN_ARRAY_8X1 J4 IOH
+  ( 1 ? )
+  ( 2 /GND )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+  ( 7 ? )
+  ( 8 ? )
+ )
+)
+*

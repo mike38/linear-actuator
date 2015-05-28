@@ -30,6 +30,13 @@ id_F510 = 5.4;
 h_F510 = 2;
 bearing_F510 = [od_F510, id_F510, h_F510];
 
+// F5114 butée 
+od_F511 = 11.5;
+id_F511 = 5.4;
+h_F511 = 2.5;
+bearing_F511 = [od_F511, id_F511, h_F511];
+
+
 // lm8uu bearing dims
 od_lm8uu = 15.2; // measured 15
 id_lm8uu = 8; // should be 8 or so
