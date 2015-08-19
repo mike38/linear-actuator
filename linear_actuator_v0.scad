@@ -11,15 +11,15 @@ include<steppers.scad>
 include<bearings.scad>
 //include<lm8uu-v3.scad>
 include<lm8uu.scad>
+use<raldrich_planetary/raldrich_planetary.scad>
 
 
 $fn = 96;
-
 //lm8uu-v3();
-render_part(5);
+render_part(1);
 
 module render_part(part_to_render) {
-	if (part_to_render == 1) end_motor();
+	if (part_to_render == 1) end_motor_planetary();
 
 	if (part_to_render == 2) end_idler();
 
@@ -75,7 +75,7 @@ t_motor_mount = 12;
 w_ends = motor[0];
 l_ends = cc_guides + d_guide_rod + 2 * pad_guide_radius;
 xy_aspect = l_ends / w_ends; // needed to scale rounded box
-t_motor_end = 25;
+t_motor_end = 20;
 idler = bearing_F511;
  //idler = bearing_625;
 t_idler_end = 20;
@@ -85,15 +85,15 @@ t_carriage = guide_bearing[2] + 6;
 
 d_clamp_screw = d_M3_screw;
 d_clamp_screw_cap = d_M3_cap;
-d_clamp_screw_nut = d_M3_nut;
+d_clamp_screw_nut = d_M3_nut+.4;
 
 // following for attachments
 
 
 // syringe pump:
 d_plunger = 19.5; // diameter of the plunger end
-d_plunger_min = 12; // minimum diameter of plunger
-d_syringe = 18;
+d_plunger_min = 14; // minimum diameter of plunger
+d_syringe = 19;
 //d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
 t_hook = 3;
 //t_hook = 5; // thickness of the hook for securing syringe to actuator
@@ -116,18 +116,27 @@ module end_motor() {
 		}
 
 		// motor mount holes
-		translate([0, 0, -t_motor_end / 2])
-			rotate([0, 0, 45])
+		translate([0, 0, -t_motor_end / 2 +5])
+			rotate([0, 0, 0])
 				NEMA_X_mount(
 					height = t_motor_end,
 					l_slot = 1,
 					motor = motor);
-
+            
 		// keyhole opening for motor mount screws
 		// for (i = [-1, 1])
 		//	translate([i * motor[3] / 2, -motor[3] / 2, 0])
 		//		cylinder(r = 2.5, h = 5, center = true);
 	}
+}
+
+
+module end_motor_planetary() {
+    union () {
+        rod_clamps(t_motor_end, pad_guide_ends);
+        rotate([180,0,0]) translate([0,0,t_motor_end/2-7])cover();
+       
+    }
 }
 
 module end_idler() {
@@ -439,7 +448,7 @@ module carriage_syringe_pump() {
 
 // renders a clamping fixture for holding the syringe body in place
 module clamp_syringe_pump() {
-	t_syringe_clamp = 7;
+	t_syringe_clamp = 6; //was 7 14/6/2015
 
 	difference() {
 				union() {
