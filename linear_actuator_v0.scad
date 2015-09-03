@@ -117,26 +117,37 @@ module end_motor() {
 
 		// motor mount holes
 		translate([0, 0, -t_motor_end / 2 +5])
-			rotate([0, 0, 0])
+			rotate([0, 0, 45])
 				NEMA_X_mount(
 					height = t_motor_end,
 					l_slot = 1,
 					motor = motor);
             
 		// keyhole opening for motor mount screws
-		// for (i = [-1, 1])
-		//	translate([i * motor[3] / 2, -motor[3] / 2, 0])
-		//		cylinder(r = 2.5, h = 5, center = true);
+		 for (i = [-1, 1])
+			translate([i * motor[3] / 2, -motor[3] / 2, 0])
+				cylinder(r = 2.5, h = 5, center = true);
 	}
 }
 
 
 module end_motor_planetary() {
+    thickness=t_motor_end;
+    
+    difference() {
+		
     union () {
-        rod_clamps(t_motor_end, pad_guide_ends);
-        rotate([180,0,0]) translate([0,0,t_motor_end/2-7])cover();
+        clamp_body(thickness);
+        *rod_clamps(t_motor_end, pad_guide_ends);
+        rotate([180,0,0]) translate([0,0,t_motor_end/2-10.5])cover();
        
     }
+    		clamp_relief(thickness, pad_guide_ends);
+    		 for (i = [-1, 1])
+                 for (j=[-1,1])
+			translate([i * motor[3] / 2, j*motor[3] / 2, 1.2])
+				cylinder(r = 3, h = 18.4, center = true);
+	}
 }
 
 module end_idler() {
@@ -368,8 +379,8 @@ module clamp_relief(
 							rotate([0, 90, 0])
 								cylinder(r = d_clamp_screw_cap / 2, h = 8, center = true);
 
-						translate([0, 0, j * (thickness - pad_ends) / 4])
-							rotate([0, 90, 0])
+						translate ([0,0,j * (thickness - pad_ends) / 4]) 
+                        rotate ([0,90,0])	rotate([0,0,30])
 								cylinder(r = d_clamp_screw_nut / 2, h = cc_guides - (l_ends - cc_guides) / 2, $fn = 6, center = true);
 					}
 			}

@@ -42,7 +42,7 @@ print_output = true;
 
 // You probably shouldn't modify things below here, unless you really know what you're doing.
 
-short_bolts = false;	// print for short bolts.
+short_bolts = true;	// print for short bolts.
 open_frame = false;
 
 output_bolt_diameter = (output_bolt == m5_bolt_output) ? m5_diameter :
@@ -109,7 +109,7 @@ vertical_clearance = 0.5;
 gear_thread_height = 10;
 sun_gear_hub_height = 10;
 sun_gear_hub_radius = 9.5;
-sun_gear_hub_inset = 3;
+sun_gear_hub_inset = 5;
 sun_bore_radius = 5.3/2;
 
 sun_gear_radius = outer_radius(sun_teeth, gear_pitch);
@@ -130,8 +130,9 @@ planet_carrier_radius = 16;
 echo("planet_carrier_height", planet_carrier_height);
 
 
-gear_clearance = 0.6;
-gear_backlash = 0.45;
+gear_clearance = 0.4;
+//gear_backlash = 0.45;
+gear_backlash = 0.6;
 gear_addendum_adjustment = 1.4;
 gear_pressure_angle = 20;
 
@@ -140,7 +141,7 @@ y = 1;
 z = 2;
 
 //planetary_frame_size = [housing_size, housing_size, sun_gear_hub_inset+sun_gear_hub_height+planet_carrier_height+vertical_clearance*2-2];
-planetary_frame_size = [housing_size, housing_size, 27.5];
+planetary_frame_size = [housing_size, housing_size, 29];
 planetary_frame_center = [0, 0, planetary_frame_size[z]/2];
 
 motor_mount_size = [housing_size, housing_size, sun_gear_hub_inset+sun_gear_hub_height - 3];
@@ -217,8 +218,8 @@ module planetary_frame()
 			assign(thickness=planet_carrier_height+vertical_clearance*2+.1)
 			render(convexity=10) translate(ring_gear_bottom)
 			rotate([0, 0, 360/(ring_teeth*2)])
-            scale ([1.05,1.05,1])
-			gear(number_of_teeth=ring_teeth, diametral_pitch=gear_pitch, hub_diameter=0, bore_diameter=0, rim_thickness=thickness, gear_thickness=thickness, clearance=0, backlash=-gear_backlash-.2, pressure_angle=gear_pressure_angle, addendum_adjustment=gear_addendum_adjustment);
+            scale ([1.02,1.02,1])
+			gear(number_of_teeth=ring_teeth, diametral_pitch=gear_pitch, hub_diameter=0, bore_diameter=0, rim_thickness=thickness, gear_thickness=thickness, clearance=-.1, backlash=-gear_backlash, pressure_angle=gear_pressure_angle+2, addendum_adjustment=gear_addendum_adjustment+.2);
 			
 			// Sun shaft.
 
@@ -237,7 +238,7 @@ module planetary_frame()
 				cylinder(h=planetary_frame_size[z]+.1, r=m3_diameter/2, $fn=12, center=true);
 
 				if (short_bolts == true)
-					translate([0, 0, 20])
+					translate([0, 0, 25])
 					cylinder(h=10, r=3, $fn=20, center=false);
 			}
 
@@ -252,10 +253,10 @@ module planetary_frame()
 
 					translate([0, 0, planetary_frame_size[z]-4-m3_nut_thickness/2])
 					{
-						cylinder(h=m3_nut_thickness, r=m3_nut_diameter/2, $fn=6, center=true);
+						cylinder(h=m3_nut_thickness+.5, r=m3_nut_diameter/2, $fn=6, center=true);
 					
 						translate([4, 0, 0])
-						cube([8, m3_nut_diameter*cos(30), m3_nut_thickness], center=true);
+						cube([8, m3_nut_diameter*cos(30), m3_nut_thickness+.5], center=true);
 					}
 
 					translate([0, 0, planetary_frame_size[z]-cover_mount_height+.6])
@@ -308,7 +309,7 @@ module planet_gear()
 		gear(number_of_teeth=planet_teeth, diametral_pitch=gear_pitch, hub_diameter=0, hub_thickness=thickness, bore_diameter=0, rim_thickness=thickness, rim_width=0, gear_thickness=thickness, clearance=gear_clearance, backlash=gear_backlash, pressure_angle=gear_pressure_angle);
 
 		translate([0, 0, thickness/2])
-		cylinder(h=thickness+.1, r=(planet_bore_diameter+planet_bore_clearance/2)/2, $fn=30, center=true);
+		cylinder(h=thickness+.1, r=(planet_bore_diameter+planet_bore_clearance)/2, $fn=30, center=true);
 	}
 }
 
@@ -345,9 +346,9 @@ module planet_carrier()
 				difference()
 				{
 					translate(planet_carrier_gear_center)
-					cylinder(h=planet_gear_height+vertical_clearance*3, r=planet_gear_radius+1, $fn=20, center=true);
+					cylinder(h=planet_gear_height+vertical_clearance*3, r=planet_gear_radius+1.1, $fn=20, center=true);
 					translate(planet_carrier_gear_center)
-					cylinder(h=planet_gear_height+vertical_clearance*3+.1, r=(planet_bore_diameter-2*planet_bore_clearance)/2, $fn=20, center=true);
+					cylinder(h=planet_gear_height+vertical_clearance*3+.1, r=(planet_bore_diameter-planet_bore_clearance)/2, $fn=20, center=true);
 					for(j=[-1, 1])
 					{
 						translate(planet_carrier_gear_center+[0, 0, j*(planet_gear_height+vertical_clearance*3)/2])
@@ -411,9 +412,9 @@ module upper_planet_carrier(print_orientation=1)
 }
 
 cover_z0 = 0;
-cover_z1 = ring_gear_bottom[z]+planet_carrier_height+vertical_clearance*2+output_bolt_double_nut*output_bolt_head_height-planetary_frame_size[z];
+cover_z1 = ring_gear_bottom[z]+planet_carrier_height+vertical_clearance*2+output_bolt_double_nut*output_bolt_head_height-planetary_frame_size[z]+1;
 cover_z2 = cover_z1+output_bearing[bearing_length]-vertical_clearance;
-cover_z3 = cover_z2+1;
+cover_z3 = cover_z2+3;
 
 cover_bolt_z0 = 0;
 cover_bolt_z1 = 2;
@@ -422,7 +423,7 @@ cover_bolt_z2 = cover_z3;
 cover_size = [housing_size, housing_size, cover_z3];
 cover_center = [0, 0, cover_size[z]/2];
 
-echo("cover height, ", cover_size[z]);
+echo("cover height, ", cover_size[z],cover_z1,cover_z2);
 
 echo("total height", planetary_frame_size[z]+cover_size[z]);
 
@@ -441,13 +442,13 @@ module cover(print_orientation=1)
 			cylinder(h=1, r=2, $fn=12, center=true);
 		}
 
-		*translate(cover_center)
-		cube(cover_size, center=true);
+		//*translate(cover_center)
+		//cube(cover_size, center=true);
 
-		translate([0, 0, (cover_z0+cover_z1)/2-.05])
+		translate([0, 0, (cover_z0+cover_z1)/2])
 		cylinder(h=cover_z1-cover_z0+.1, r=planet_carrier_radius+1, $fn=40, center=true);
 
-		translate([0, 0, (cover_z1+cover_z2)/2-.05])
+		translate([0, 0, (cover_z1+cover_z2)/2])
 		cylinder(h=cover_z2-cover_z1+.1, r=(output_bearing[bearing_body_diameter]+output_bearing_clearance[bearing_body_diameter])/2, $fn=30, center=true);
 
 		translate(cover_center)
@@ -469,26 +470,28 @@ module planetary_plate()
 {
 	if (print_body == true)
 	{
-		planetary_frame();
+		*planetary_frame();
 
 		translate([15, 35, 0])
 		sun_gear();
 
-		//for(i=[-1:1])
-			//translate([35, i*16, 0])
-			//planet_gear();
+		for(i=[-1:1])
+		//	translate([35, i*16, 0])
+        *    translate([i*16,0,0])
+        planet_gear();
 
-		//translate([-15, 40, 0])
-		//lower_planet_carrier();
+		*translate([-15, 40, 0])
+		lower_planet_carrier();
 	}
 
 	if (print_output == true)
 	{
 		//translate([-50, 40, 0])
-		//upper_planet_carrier();
+        *translate([20, 40, 0])
+		upper_planet_carrier();
 	
-		translate([-45, 0, 0])
-		cover();
+		//translate([-45, 0, 0])
+		//cover();
 	}
 }
 
@@ -498,9 +501,9 @@ module planetary_assembled(exploded=0)
 	rotate([0, 0, 180/sun_teeth*even(sun_teeth)])
 	sun_gear();
 
-	planetary_frame();
+	*planetary_frame();
 
-	*translate(ring_gear_bottom+[0, 0, vertical_clearance+exploded*24])
+	translate(ring_gear_bottom+[0, 0, vertical_clearance+exploded*24])
 	lower_planet_carrier(print_orientation=0);
 
 	translate(ring_gear_bottom+[0, 0, planet_carrier_gear_center[z]-planet_gear_height/2+exploded*36])
