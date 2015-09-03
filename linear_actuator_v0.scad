@@ -16,7 +16,7 @@ use<raldrich_planetary/raldrich_planetary.scad>
 
 $fn = 96;
 //lm8uu-v3();
-render_part(1);
+render_part(5);
 
 module render_part(part_to_render) {
 	if (part_to_render == 1) end_motor_planetary();
@@ -91,8 +91,9 @@ d_clamp_screw_nut = d_M3_nut+.4;
 
 
 // syringe pump:
-d_plunger = 19.5; // diameter of the plunger end
-d_plunger_min = 14; // minimum diameter of plunger
+d_plunger = 16; // diameter of the plunger end
+d_plunger_min = 4; // minimum diameter of plunger
+plunger_thick = 9; // thickness of plunger end
 d_syringe = 19;
 //d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
 t_hook = 3;
@@ -351,6 +352,7 @@ module clamp_body(thickness) {
 	}
 }
 
+
 module clamp_relief(
 	thickness,
 	pad_ends) {
@@ -469,14 +471,18 @@ module clamp_syringe_pump() {
 					translate([0, -((w_ends + idler[0]) / 2 - idler[0]) / 2, 0])
 						cube([l_ends - 2 * (l_ends - cc_guides), (w_ends + idler[0]) / 2, t_syringe_clamp], center = true);
 
-					translate([0, (idler[0]+ pad_bearings + d_syringe) / 2, 0])
+				*	translate([0, (idler[0]+ pad_bearings + d_syringe) / 2, 0])
 						hull()
 							for (i = [-0.7, -1])
 								translate([0, i * d_syringe / 2, 0])
 									cylinder(r = d_syringe / 2 + 4, h = t_syringe_clamp, center = true);
 
-				translate([0, -((w_ends + idler[0]) / 2 - idler[0]) / 2 - (w_ends + idler[0]) / 4 + (d_M3_nut + 2) / 2 , 2])
-					cube([l_ends - 2 * (l_ends - cc_guides), d_M3_nut + 2, t_syringe_clamp + 3], center = true);
+            translate([0, (idler[0]+ pad_bearings) / 2, 0])
+                         cube([d_syringe+2*t_syringe_clamp, d_syringe, t_syringe_clamp], center = true);   
+
+
+				translate([-(l_ends/2)+(l_ends-cc_guides), -w_ends /2  , t_syringe_clamp/2-0.1 ])
+					cube([l_ends - 2 * (l_ends - cc_guides), d_M3_nut + 2 + w_ends/2, plunger_thick]);
 		}
 
 		// lead screw
