@@ -27,7 +27,7 @@ module render_part(part_to_render) {
         if (part_to_render == 9) carriage_top();
 	if (part_to_render == 4) carriage_syringe_pump();
 
-	if (part_to_render == 5) clamp_syringe_pump();
+	if (part_to_render == 5) clamp_syringe_pump_head2();
 
 	if (part_to_render == 6) {
 		for (i = [-1, 1])
@@ -92,14 +92,15 @@ d_clamp_screw_nut = d_M3_nut+.4;
 
 // syringe pump:
 d_plunger = 16; // diameter of the plunger end
-d_plunger_min = 4; // minimum diameter of plunger
+d_plunger_min = 5; // minimum diameter of plunger
 plunger_thick = 9; // thickness of plunger end
-d_syringe = 19;
+d_syringe = 20;
 //d_syringe = 25; // diameter of the syringe body - sets size of syringe holder
 t_hook = 3;
 //t_hook = 5; // thickness of the hook for securing syringe to actuator
 d_plunger_max = 20; // this sets the spacing for screws on the plunger retainer and carriage
 d_plunger_retainer = d_plunger_max + 12;
+d_syringe_max = 25.5;
 
 
 module end_motor() {
@@ -478,23 +479,23 @@ module clamp_syringe_pump() {
 									cylinder(r = d_syringe / 2 + 4, h = t_syringe_clamp, center = true);
 
             translate([0, (idler[0]+ pad_bearings) / 2, 0])
-                         cube([d_syringe+2*t_syringe_clamp, d_syringe, t_syringe_clamp], center = true);   
+                         cube([d_syringe+3*t_syringe_clamp, d_syringe, t_syringe_clamp], center = true);   
 
 
 				translate([-(l_ends/2)+(l_ends-cc_guides), -w_ends /2  , t_syringe_clamp/2-0.1 ])
-					cube([l_ends - 2 * (l_ends - cc_guides), d_M3_nut + 2 + w_ends/2, plunger_thick]);
+					cube([l_ends - 2 * (l_ends - cc_guides),  w_ends/2+(idler[0]+ pad_bearings) / 2+(d_syringe-d_syringe_max)/2, plunger_thick]);
 		}
 
 		// lead screw
 		hull()
 			for (i = [0, -1])
 				translate([0, i * w_ends, 0])
-					cylinder(r = d_lead_nut / 2 + 1, h = t_syringe_clamp + 8, center = true);
+					cylinder(r = d_lead_nut / 2 + 1, h = t_syringe_clamp + plunger_thick*2+ 1, center = true);
 
 		// screw holes for retaining syringe against clamp
-		end_mount_holes(t_syringe_clamp + 3, d_M3_screw);
+		end_mount_holes(t_syringe_clamp +plunger_thick*2 , d_M3_screw);
 
-		translate([0, 0, t_syringe_clamp / 2+1])
+		translate([0, 0, t_syringe_clamp / 2+plunger_thick])
 			end_mount_holes(h_M3_nut * 2, d_M3_nut, 6);
 
 		// guide rods
@@ -506,15 +507,83 @@ module clamp_syringe_pump() {
 		translate([0, (idler[0]+ pad_bearings + d_syringe) / 2, 0])
 			cylinder(r = d_syringe / 2, h = t_syringe_clamp + 1, center = true);
 
-		for (i = [-1, 1])
+		for (i = [-1, 1]){
 			translate([i * (cc_guides / 2 + 1.5), -w_ends / 2 + offset_guides - d_guide_rod / 2 + 2, 0])
 				rounded_box(
 					l1 = (l_ends - cc_guides + 3),
 					l2 = w_ends,
 					r_corner = 3,
 					height = t_syringe_clamp +1);
-	}
+			translate([i* (d_syringe+t_syringe_clamp)/2,( d_syringe),0]) rotate([90,0,0])cylinder (r=d_M3_screw/2,h= d_syringe/2);
+			translate([i* (d_syringe+t_syringe_clamp)/2,idler[0]+1,0]) cube ([0.85*d_M3_nut,h_M3_nut,t_syringe_clamp+0.2],center= true);
+		}
+	}	
 }
+
+module clamp_syringe_pump_head() {
+t_syringe_clamp = 6;
+
+difference(){
+    union(){
+        cube([l_ends/2+1, l_ends/2-2, t_syringe_clamp], center = true); 
+        translate([0,0,t_syringe_clamp/2+plunger_thick/2]) 
+            cube([l_ends/2+1, l_ends/2-2,plunger_thick], center = true);
+        translate([0,0,t_syringe_clamp/4*3+plunger_thick]) 
+            cube([l_ends/2+1, l_ends/2-2,t_syringe_clamp/2], center = true);
+        
+    }
+
+cylinder(r = d_syringe / 2, h = t_syringe_clamp + .1, center = true);
+translate([0,0,t_syringe_clamp/2+plunger_thick/2]) 
+cube([d_syringe_max, d_syringe_max,plunger_thick + .4], center = true);
+translate([0,0,t_syringe_clamp/2+2.5]) 
+cylinder(r=29/2,h=5,$fn=6, center = true);
+
+ translate([0,0,t_syringe_clamp/4*3+plunger_thick]) 
+   cylinder(r = d_plunger_min / 2, h = t_syringe_clamp/2 + .1, center = true); 
+translate([-l_ends/2,0,-t_syringe_clamp/2-1]) cube([l_ends, l_ends, 2*t_syringe_clamp+plunger_thick]);
+    
+
+    for (i = [-1, 1]){
+        translate([i* (d_syringe+t_syringe_clamp)/2,0.1,0]) rotate([90,0,0])cylinder (r=d_M3_screw/2,h= l_ends/2);
+        translate([i* (d_syringe+t_syringe_clamp)/2,-l_ends/4+1+h_M3_cap,0]) rotate([90,0,0])cylinder (r=d_M3_cap/2,h= h_M3_cap+.2);
+        
+        }
+
+}}
+
+module clamp_syringe_pump_head2() {
+t_syringe_clamp = 6;
+plunger_thick=4.5;
+    d_plunger_min=15.5;
+difference(){
+    union(){
+        cube([l_ends/2+1, l_ends/2-2, t_syringe_clamp], center = true); 
+        translate([0,0,t_syringe_clamp/2+plunger_thick/2]) 
+            cube([l_ends/2+1, l_ends/2-2,plunger_thick], center = true);
+        translate([0,0,t_syringe_clamp/4*3+plunger_thick]) 
+            cube([l_ends/2+1, l_ends/2-2,t_syringe_clamp/2], center = true);
+        
+    }
+
+cylinder(r = d_syringe / 2, h = t_syringe_clamp + .1, center = true);
+translate([0,0,t_syringe_clamp/2+plunger_thick/2]) 
+cube([d_syringe_max, d_syringe_max,plunger_thick + .4], center = true);
+translate([0,0,t_syringe_clamp/2+2.5]) 
+cylinder(r=29/2,h=5,$fn=6, center = true);
+
+ translate([0,0,t_syringe_clamp/4*3+plunger_thick]) 
+   cylinder(r = d_plunger_min / 2, h = t_syringe_clamp/2 + .1, center = true); 
+translate([-l_ends/2,0,-t_syringe_clamp/2-1]) cube([l_ends, l_ends, 2*t_syringe_clamp+plunger_thick]);
+    
+
+    for (i = [-1, 1]){
+        translate([i* (d_syringe+t_syringe_clamp)/2,0.1,0]) rotate([90,0,0])cylinder (r=d_M3_screw/2,h= l_ends/2);
+        #translate([i* (d_syringe+t_syringe_clamp)/2,-l_ends/4+h_M3_cap,0]) rotate([90,0,0])cylinder (r=d_M3_cap/2,h= h_M3_cap+.1);
+        
+        }
+
+}}
 
 module syringe_hook() {
 	offset_hook = 15;
